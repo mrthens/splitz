@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "280771980898",
+    "project_id": "splitz-96afb",
+    "storage_bucket": "splitz-96afb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280771980898:android:f37fb06fb8bc623058eb3b",
+        "android_client_info": {
+          "package_name": "com.example.splitz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxtZSnGQnU0B2XU22GEb-iXlPNQWQ_nEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
