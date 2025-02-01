@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "280771980898",
+    "firebase_url": "https://splitz-96afb-default-rtdb.firebaseio.com",
     "project_id": "splitz-96afb",
     "storage_bucket": "splitz-96afb.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.splitz"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "280771980898-e8b8r4117u1l7snj0sc24roupnhhjci0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.splitz",
+            "certificate_hash": "2455d8478240782df90a5f6cd3f2789a73bbdadd"
+          }
+        },
+        {
+          "client_id": "280771980898-8nit5fja14a5vufm24vhnn0db9ado2ro.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDxtZSnGQnU0B2XU22GEb-iXlPNQWQ_nEk"
@@ -20,7 +34,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280771980898-8nit5fja14a5vufm24vhnn0db9ado2ro.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "280771980898-8cjih3b5gc6gh1vhjl5afp0kmros8leb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.splitz"
+              }
+            }
+          ]
         }
       }
     }

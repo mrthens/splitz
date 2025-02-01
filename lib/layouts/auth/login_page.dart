@@ -1,10 +1,12 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:splitz/layouts/create_account.dart';
-import 'package:splitz/layouts/dashboard.dart';
-import 'package:splitz/main.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:splitz/layouts/auth/create_account.dart';
+import 'package:splitz/layouts/dash/dashboard.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,8 +20,60 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn =GoogleSignIn();
+  final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   bool isLoading = false;
+
+  Future<void> SignInWithGoogle() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+
+      // Create a new credential using the Google access token and ID token
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      //sign in to firebase with google
+      final UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        //store data containers
+        final String email = user.email ?? '';
+        final String username = user.displayName ?? 'User';
+
+        //storing data to Firestore
+        final userRef = firebaseFirestore.collection('users').doc(user.uid);
+
+        await userRef.set({
+          'email': email,
+          'username': username,
+          'createdAt': Timestamp.now(),
+        });
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Logged In with Google")));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Dashboard()));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Failed : $e")));
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   void forgotpassword() async{
       final email=_emailController.text.trim();
@@ -203,7 +257,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: SignInWithGoogle,
                     icon: Icon(
                       Icons.login,
                       color: Colors.black,
