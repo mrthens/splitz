@@ -8,6 +8,8 @@ import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'layouts/auth/login_page.dart';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 class OnlineStatusService with WidgetsBindingObserver {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -16,7 +18,9 @@ class OnlineStatusService with WidgetsBindingObserver {
     if (auth.currentUser != null) {
       firestore.collection('users').doc(auth.currentUser!.uid).update({
         'online': isOnline,
-        'lastSeen': isOnline ? FieldValue.serverTimestamp() : FieldValue.serverTimestamp(),
+        'lastSeen': isOnline
+            ? FieldValue.serverTimestamp()
+            : FieldValue.serverTimestamp(),
       });
     }
   }
@@ -25,7 +29,8 @@ class OnlineStatusService with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       updateOnlineStatus(true);
-    } else if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
       updateOnlineStatus(false);
     }
   }
@@ -33,11 +38,13 @@ class OnlineStatusService with WidgetsBindingObserver {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Firebase before running the app
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+   // Initialize Firebase Messaging
+
 
   // Create OnlineStatusService instance after Firebase initialization
   OnlineStatusService onlineStatusService = OnlineStatusService();
@@ -45,6 +52,9 @@ void main() async {
 
   runApp(MainApp());
 }
+
+
+
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -65,11 +75,15 @@ class AuthendicationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? user = FirebaseAuth.instance.currentUser;
 
-   if (user != null) {
+    if (user != null) {
       // Ensure the user document exists
-      FirebaseFirestore.instance.collection('user').doc(user.uid).get().then((docSnapshot) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get()
+          .then((docSnapshot) {
         if (!docSnapshot.exists) {
-          FirebaseFirestore.instance.collection('user').doc(user.uid).set({
+          FirebaseFirestore.instance.collection('users').doc(user.uid).set({
             'online': false,
             'lastSeen': FieldValue.serverTimestamp(),
           });
@@ -81,5 +95,4 @@ class AuthendicationWrapper extends StatelessWidget {
       return LoginPage();
     }
   }
-  
 }
